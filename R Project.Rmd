@@ -1,0 +1,399 @@
+---
+title: "An Analysis of Baseball Statistics from 1985 to 2015"
+author: "Remy Heinala and Spencer Roelke"
+date: "11/15/2021"
+output: html_document
+theme: yeti
+indent: true
+---
+
+```{=html}
+<style type="text/css">
+
+h1.title {
+  font-size: 38px;
+  font-family: "Times New Roman", Times, serif;
+  text-align: center;
+}
+
+h4.author { /* Header 4 - and the author and data headers use this too  */
+    font-size: 18px;
+  font-family: "Times New Roman", Times, serif;
+  text-align: center;
+}
+
+h4.date { /* Header 4 - and the author and data headers use this too  */
+  font-size: 18px;
+  font-family: "Times New Roman", Times, serif;
+  text-align: center;
+}
+</style>
+```
+
+```{r echo=FALSE}
+# Loading the data frames
+
+pitching = read.csv("~/Desktop/R:RStudio ECON 3818/R Project/Lahman Baseball Data/Pitching.csv")
+
+salaries = read.csv("~/Desktop/R:RStudio ECON 3818/R Project/Lahman Baseball Data/Salaries.csv")
+
+```
+
+#### Data Base
+
+The data sets used for analysis comes from Lahman's Baseball Database. This is a broad data base that covers a range of aspects of baseball from the year 1871 to 2015. This analysis will more specifically focus on statistics from three aspects of baseball, players batting, pitching, and salary statistics. For this report, the focus will primarily be on the salary and pitching data sets.
+
+<br>
+
+##### The Pitching Data Set
+
+The Pitching data set contains 44,139 observations of 30 different variables. This data set has many different units of observations. This data set goes from the year 1871 to the year 2015.
+
+The variables being observed within the data set are:
+
+-   Loses
+-   Games
+-   Games Started
+-   Completed Games
+-   Shutouts
+-   Saves
+-   Outs Pitched
+-   Hits
+-   Earned Runs
+-   Homerune
+-   Walks
+-   Strikeouts
+-   Opponents Batting Average
+-   Earned Run Average
+-   Intentional Walks
+-   Wild Pitches
+-   Batters Hit By Pitch
+-   Balks
+-   Batters faced by Pitcher
+-   Games Finished
+-   Runs Allowed
+-   Sacrifices by opposing batters
+-   Sacrifice flies by opposing batters
+-   Grounded into double plays by opposing batter
+
+The units for the observations range from games and home runs, to batting averages.
+
+Each row of the data set is on player and shows their statistics for each of the observations. This means that there are repeat observations for the same player if they played consecutive years.
+
+Some key variables within the data set are the players games played, strikeouts, hits, outs pitched, and games finished.
+
+<br>
+
+##### The Salary Data Set
+
+The Salary data set contains 25,575 observations of 5 variables. This set of data differs from the data set containing pitching statistics because it only contains data from the year 1985 to the year 2015.
+
+The variables being observed within the data set are:
+
+-   Year
+-   Team
+-   League
+-   Player ID code
+-   Salary
+
+Each row of the data set is an observed player and their subsequent salary statistics. The data set does contain repeated observations of the same player but in different years. This is much like the pitching statistics data set.
+
+The three variables of interest for the purposes of the analysis is the players salary, team, and year they played.
+
+<br>
+
+#### A Summary of the Salary Data set
+
+```{r echo=FALSE}
+# Summarizing the salary data set with sample statistics
+mean_player_sal = mean(salaries$salary)
+sd_player_sal = sd(salaries$salary)
+med_player_sal = median(salaries$salary)
+
+# Creating a new data frame with just salaries and years 
+salaries_all = data.frame(
+  salary1 = (salaries$salary)/1000,
+  year = salaries$yearID
+)
+
+# Creating a histogram with the average salary of each year in thousands
+library(ggplot2)
+
+ggplot(salaries_all, aes(x = year, y = (salary1/1000))) +
+  geom_col(fill = "#0099f9") + 
+  labs(
+    title = "Average Player Salary By Year From 1985 to 2015",
+    x = "Year",
+    y = "Salary in Thousands of Dollars"
+)
+
+
+```
+
+Looking at the histgram above, it shows that players salaries have been steadily increasing over the past thirty years.
+
+The mean of players salaries over the entire time period is \$2,008,563. The standard deviation is \$3,315,706. The median player salary over the thirty year period is \$550,000.
+
+The limitation of finding these sample statistics is that it does not reflect inflation and does not distinguish one player from another based on their individual game statistics.
+
+A further limitation is shown within the histograph. Through the graph, it is obvious that the data is skewed to the left. This is what allowed for the conclusion that players salaries have been increasing on average. However, this also means that the mean is not a reliable measure of the center. Instead, it is better to use the median.
+
+```{r echo=FALSE}
+# Subsetting the data to only include the salaris of the players on the 
+salaries_col = salaries[salaries$teamID == "ATL",]
+
+# Further subseting to only see the salries from the year 1985 to 2005
+salaries_range = salaries_col[salaries_col$yearID >= "1985" & salaries_col$yearID <= "2005",]
+
+```
+
+```{r echo=FALSE}
+# Finding the average salary of each year from 1985 to 2005
+sal_1985 = salaries_range[salaries_range$yearID == "1985", ]
+mean_1985 = mean(sal_1985$salary)/1000
+
+sal_1986 = salaries_range[salaries_range$yearID == "1986", ]
+mean_1986 = mean(sal_1986$salary)/1000
+
+sal_1987 = salaries_range[salaries_range$yearID == "1987", ]
+mean_1987 = mean(sal_1987$salary)/1000
+
+sal_1988 = salaries_range[salaries_range$yearID == "1988", ]
+mean_1988 = mean(sal_1988$salary)/1000
+
+sal_1989 = salaries_range[salaries_range$yearID == "1989", ]
+mean_1989 = mean(sal_1989$salary)/1000
+
+sal_1990 = salaries_range[salaries_range$yearID == "1990", ]
+mean_1990 = mean(sal_1990$salary)/1000
+
+sal_1991 = salaries_range[salaries_range$yearID == "1991", ]
+mean_1991 = mean(sal_1991$salary)/1000
+
+sal_1992 = salaries_range[salaries_range$yearID == "1992", ]
+mean_1992 = mean(sal_1992$salary)/1000
+
+sal_1993 = salaries_range[salaries_range$yearID == "1993", ]
+mean_1993 = mean(sal_1993$salary)/1000
+
+sal_1994 = salaries_range[salaries_range$yearID == "1994", ]
+mean_1994 = mean(sal_1994$salary)/1000
+
+sal_1995 = salaries_range[salaries_range$yearID == "1995", ]
+mean_1995 = mean(sal_1995$salary)/1000
+
+sal_1996 = salaries_range[salaries_range$yearID == "1996", ]
+mean_1996 = mean(sal_1996$salary)/1000
+
+sal_1997 = salaries_range[salaries_range$yearID == "1997", ]
+mean_1997 = mean(sal_1997$salary)/1000
+
+sal_1998 = salaries_range[salaries_range$yearID == "1998", ]
+mean_1998 = mean(sal_1998$salary)/1000
+
+sal_1999 = salaries_range[salaries_range$yearID == "1999", ]
+mean_1999 = mean(sal_1999$salary)/1000
+
+sal_2000 = salaries_range[salaries_range$yearID == "2000", ]
+mean_2000 = mean(sal_2000$salary)/1000
+
+sal_2001 = salaries_range[salaries_range$yearID == "2001", ]
+mean_2001 = mean(sal_2001$salary)/1000
+
+sal_2002 = salaries_range[salaries_range$yearID == "2002", ]
+mean_2002 = mean(sal_2002$salary)/1000
+
+sal_2003 = salaries_range[salaries_range$yearID == "2003", ]
+mean_2003 = mean(sal_2003$salary)/1000
+
+sal_2004 = salaries_range[salaries_range$yearID == "2004", ]
+mean_2004 = mean(sal_2004$salary)/1000
+
+sal_2005 = salaries_range[salaries_range$yearID == "2005", ]
+mean_2005 = mean(sal_2005$salary)/1000
+
+# Adding all of the years mean salaries into a single vector
+avg_salary_atl = data.frame(
+  salary = c(mean_1985, mean_1986, mean_1987, mean_1988, mean_1989, mean_1990, mean_1991, mean_1992, mean_1993, mean_1994, mean_1995, mean_1996, mean_1997, mean_1998, mean_1999, mean_2000, mean_2001, mean_2002, mean_2003, mean_2004, mean_2005),
+  year = c(1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005))
+
+```
+
+<br>
+
+```{r echo=FALSE}
+# Creating the histogram of average salaries from 1985 to 2005 with ggplot
+library(ggplot2)
+
+ggplot(avg_salary_atl, aes(x = year, y = salary)) + 
+  geom_col(fill = "#0099f9") +
+  labs(
+    title = "Average Atlanta Player Salaries By Year From 1985 to 2005",
+    x = "Year",
+    y = "Average Salary in Thousands of Dollars"
+  )
+```
+
+```{r echo=FALSE}
+# Calculating the subset data statistics
+mean_atl = mean(avg_salary_atl$salary)*1000
+sd_atl = sd(avg_salary_atl$salary)*1000
+med_atl = median(avg_salary_atl$salary)*1000
+```
+
+In order to further summarize this data set, sub-setting the data and only looking at a twenty year period, from 1985 to 2005, of Atlanta player salaries reveals interesting information.
+
+As can be seen in the histogram below, player salaries have been mostly trending upward for the last twenty years. However, interestingly enough, there was a period of time, from 1985 to 1989, where the average players salary was trending downward.
+
+There are numerous reason this upward trend could be happening. First off, it could simply be due to occurrence of inflation in the economy. Second, it could be due to a rise in popularity in baseball. This increase in popularity may have caused a corresponding increase in revenue for teams allowing them to pay their players better.
+
+In this subset of data, the mean for the twenty year period is \$1,758,356. The median is \$1,646,117. Lastly the standard deviation is \$1,152,838. Due to the previous observation that the average players salary on Atlantas team has been rising, this means that the data is skewed left. Due to this skew, the mean is not as reliable of an indicator of the center of the data as the median is.
+
+<br>
+
+#### A Confidence Interval About the Difference in Salaries Between Players from Two Different Teams
+
+In order to better understand the data, a confidence interval about the difference between two sample means will do that. In this case, it would be interesting to create one about the difference in means for the salaries of players on one team versus the salaries for players on another team in a given year.
+
+In order test to create this, the confidence interval will be created at the 95% level.
+
+The confidence interval will be about the difference in the mean salaries of players on the Colorado team and players on the Atlanta team in the year 2015.
+
+```{r echo=FALSE}
+# Subsetting the data to get the mean of ATL players salaries in 2015
+atl_2015_sal = salaries[salaries$teamID == "ATL" & salaries$yearID == "2015",]
+
+# Doing the same for Colorado
+col_2015_sal = salaries[salaries$teamID == "COL" & salaries$yearID == "2015",]
+
+# Finding the means of each sample
+mean_atl_2015 = mean(atl_2015_sal$salary)
+mean_col_2015 = mean(col_2015_sal$salary)
+
+# Finding the sd of each sample
+sd_atl = sd(col_2015_sal$salary)
+sd_col = sd(atl_2015_sal$salary)
+
+# Finding the sample standard deviations
+ci_sd = sqrt(
+  (sd_col/length(col_2015_sal$salary)) +
+    (sd_atl/length(atl_2015_sal))
+)
+
+# Finding the difference in means
+diff_means = mean_col_2015 - mean_atl_2015
+
+# tstar from given CI level and degree of freedom of 23
+tstar = 2.069
+
+# MOE
+moe = tstar * ci_sd
+
+# Creating the Upper and Lower limit for the CI
+upper_limit = diff_means + moe
+lower_limit = diff_means - moe
+
+```
+
+The calculated confidence interval is [\$834,426.2, \$838,891]. This means that in repeated sampling, we would expect the difference in the average salaries between the players on both of the teams to fall within that interval 95% of the time.
+
+<br>
+
+#### A Hypothesis Test
+
+This data offers answers to some interesting questions. One such question that would be interesting to have answered with a hypothesis test is whether or not the difference in the mean salary of Arizona players in the year 2015 and the mean salary of Boston players in the same year is zero. This would leave the null hypothesis that the difference between the two sample means is zero and the alternative hypothesis that the difference is not zero. This leads to a right-tailed hypothesis test.
+
+$$
+H_0: 𝜇_1 - 𝜇_2 = 0
+$$
+
+$$
+H_a: 𝜇_1-𝜇_2 > 0
+$$
+
+This test will also be conducted at an alpha of 0.05
+
+$$
+\alpha = 0.05
+$$
+
+```{r echo=FALSE}
+# Subsetting the data to pull out arizona players and boston players in 2015
+bos_sal_2015 = salaries[salaries$teamID == "BOS" & salaries$yearID == "2015",]
+ari_sal_2015 = salaries[salaries$teamID == "ARI" & salaries$yearID == "2015",]
+
+# Finding the mean salary of players for each team
+mean_bos_sal = mean(bos_sal_2015$salary)
+mean_ari_sal = mean(ari_sal_2015$salary)
+
+# getting the variance of each of the salaries
+var_bos = var(bos_sal_2015$salary)
+var_ari = var(ari_sal_2015$salary)
+
+# Calculate z-stat
+num = (mean_bos_sal - mean_ari_sal) - 0 
+denom = sqrt(
+  var_bos/length(bos_sal_2015$salary) +
+  var_ari/length(ari_sal_2015$salary)
+)
+
+zstat = num / denom
+
+# Calculate p-value (right tailed test)
+p_value = 1 - pnorm(zstat)
+
+```
+
+After conducting the hypothesis test, the calculated zstat is `r zstat`. Using this, a p-value of `r p_value` is found. This results in the following:
+
+$$
+\alpha  >  0.0017539
+$$
+
+The resulting conclusion from the test is that we must reject the null hypothesis that the difference in mean salaries of players from both teams is equal to zero. There is little evidence to support the null hypothesis. It is simply too rare for the difference in sample means to occur under the null hypothesis. This is shown by the p-value calculated.
+
+<br>
+
+#### Correlation Between Two Statistics, Number of Strikouts and Salary
+
+```{r message=FALSE, echo=FALSE}
+# Sub-setting pitching data for the year 2015
+pitching_2015 = pitching[pitching$yearID == "2015",]
+
+# Removing some rows so that there are the same amount in salary and pitching
+old_salary_2015 = salaries[salaries$yearID == "2015",]
+salary_2015 = old_salary_2015[-c(810, 811, 812, 813, 814, 815, 816, 817),]
+
+# Creating new data frame that only includes salary and year
+pitching_strike = data.frame(
+  strikeouts = pitching_2015$SO,
+  salary1 = (salary_2015$salary)/1000
+)
+
+# Calculating the regressions statistics
+reg = lm(salary1 ~ strikeouts, data = pitching_strike)
+
+# Creating the scatter plot
+library(ggplot2)
+
+ggplot(pitching_strike, aes(x = strikeouts, y = salary1)) +
+  geom_point(color = "#0099f9") +
+  labs(
+    title = "Is There a Correlation Between Strikeouts and Salary in 2015?",
+    x = "Number of Strikouts in 2015",
+    y = "Salary in Thousands in 2015"
+  ) +
+  geom_smooth(method = "lm", col = "red")
+
+```
+
+When plotting both the Number of strikeouts by players in 2015 and their salaries in the same year, it shows that there is no real correlation between them. Intuitively, it would make sense for a player that pitches a higher number of strikeouts, to also be paid a higher salary, however that is not the case as shown by the scatter plot.
+
+The equation for the line of best fit on the scatter plot is:
+
+$$
+y = 0.132x + 4258.680
+$$
+The equation means that if player had zero strikeouts in the 2015 season, they would have a predicted salary of \$4,258,680. Additionally, for each strikeout a player has, its predicted that their salary would increase by \$132.
+
+However, as shown by the plot, this line is unable to accurately predict a players salary based on the number of strikeouts they pitch. This is shown by the R-Squared value of 0.000001475. This means that the regression model explains less than 0.000001% of the variability in players salaries. 
